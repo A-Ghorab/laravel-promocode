@@ -1,0 +1,41 @@
+{
+    "name": "aghorab/laravel-promocode",
+    "description": "laravel promocode manager",
+    "type": "library",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "AGhorab\\LaravelPromocode\\": "src/"
+        },
+        "files": [
+            "src/helpers.php"
+        ]
+    },
+    "authors": [
+        {
+            "name": "Ahmed Ghorab",
+            "email": "aghorab@outlook.com"
+        }
+    ],
+    "require": {
+        "illuminate/database": "^10",
+        "illuminate/support": "^10",
+        "illuminate/container": "^10",
+        "illuminate/console": "^10"
+    },
+    "config": {
+        "allow-plugins": {
+            "pestphp/pest-plugin": true
+        }
+    },
+    "scripts": {
+        "test": "./vendor/bin/pest",
+        "phpstan": "./vendor/bin/phpstan analyse",
+        "pint": "./vendor/bin/pint"
+    },
+    "require-dev": {
+        "nunomaduro/larastan": "^2",
+        "orchestra/testbench": "^8.5",
+        "laravel/pint": "^1.10"
+    }
+}
