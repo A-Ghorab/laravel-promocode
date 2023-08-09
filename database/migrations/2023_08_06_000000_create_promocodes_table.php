@@ -18,7 +18,7 @@ return new class extends Migration
         Schema::create($models['promocodes']['table_name'], function (Blueprint $table) use ($models) {
             $table->id();
             $table->string('code', 20)->unique();
-            $table->integer('total_usages')->nullable();
+            $table->unsignedInteger('total_usages')->nullable();
             $table->boolean('multi_use')->default(false);
             $table->foreignId($models['promocodes']['bound_to_user_id_foreign_id'])->nullable()->constrained($models['users']['table_name'], $models['users']['id'])->nullOnDelete();
             $table->json('details')->nullable();

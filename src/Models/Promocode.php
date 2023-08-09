@@ -2,6 +2,7 @@
 
 namespace AGhorab\LaravelPromocode\Models;
 
+use AGhorab\LaravelPromocode\Database\Factories\PromocodeFactory;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -13,17 +14,21 @@ use Illuminate\Foundation\Auth\User;
  * App\Models\Promocode
  *
  * @property int $id
- * @property \Illuminate\Support\Carbon|null $expired_at
+ * @property string $code
  * @property int|null $total_usages
  * @property User|null $boundedUser
- * @property-read int $usages_count
+ * @property bool $multi_use
+ * @property \Illuminate\Support\Carbon|null $expired_at
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read int $usages_count
  *
  * @method static \Illuminate\Database\Eloquent\Builder|Promocode newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Promocode newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Promocode query()
  * @method static \Illuminate\Database\Eloquent\Builder|Promocode whereExpiredAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Promocode available()
+ * @method static Promocode findByCode(string $code)
  */
 class Promocode extends Model
 {
@@ -57,6 +62,11 @@ class Promocode extends Model
         $this->setTable(config('promocodes.models.promocodes.table_name'));
     }
 
+    protected static function newFactory()
+    {
+        return new PromocodeFactory();
+    }
+
     public function boundedUser(): BelongsTo
     {
         return $this->belongsTo(
@@ -68,7 +78,7 @@ class Promocode extends Model
     public function usages(): HasMany
     {
         return $this->hasMany(
-            config('promocodes.models.promocode_usage_table.model'),
+            getPromocodeUsageModel(),
             config('promocodes.models.promocode_usage_table.promocode_foreign_id')
         );
     }
@@ -90,7 +100,7 @@ class Promocode extends Model
 
     public function isUnlimited(): bool
     {
-        return $this->total_usages === null || $this->total_usages < 0;
+        return $this->total_usages === null;
     }
 
     public function hasUsagesLeft(): bool
