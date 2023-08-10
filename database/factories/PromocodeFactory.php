@@ -5,6 +5,7 @@ namespace AGhorab\LaravelPromocode\Database\Factories;
 use AGhorab\LaravelPromocode\Models\Promocode;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Foundation\Auth\User;
 
 /**
  * @extends Factory<Promocode>
@@ -83,6 +84,15 @@ class PromocodeFactory extends Factory
         return $this->state(function (array $attributes) {
             return [
                 'multi_use' => true,
+            ];
+        });
+    }
+
+    public function boundedUser(User $user): Factory
+    {
+        return $this->state(function (array $attributes) use ($user) {
+            return [
+                config('promocodes.models.promocodes.bound_to_user_id_foreign_id') => $user->getAuthIdentifier(),
             ];
         });
     }

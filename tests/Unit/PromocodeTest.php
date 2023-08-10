@@ -3,6 +3,7 @@
 use AGhorab\LaravelPromocode\Models\Promocode;
 use AGhorab\LaravelPromocode\Models\PromocodeUsage;
 use AGhorab\LaravelPromocode\Tests\MockModels\User;
+use Illuminate\Support\Collection;
 
 it('should return available promocodes', function () {
     Promocode::factory()->expired()->count(5)->create();
@@ -64,4 +65,16 @@ it('user can use promocode multiple times if multi use is enabled', function () 
     Promocode::factory()->has(PromocodeUsage::factory()->forUser($user)->count(1), 'usages')->multiUse()->totalUsage(5)->count(3)->create();
 
     expect(Promocode::query()->hasUsageForUser($user)->count())->toEqual(11);
+});
+
+it('validate bounded promocode is only visible to the one issuer only', function () {
+    [$user, $otherUser] = User::factory()->count(2)->create();
+    /** @var Promocode */
+    $promocode = Promocode::factory()->singleUse()->boundedUser($user)->createOne();
+
+    /** @var Collection<int,Promocode> */
+    $promocodesForUser = Promocode::query()->hasUsageForUser($user)->get();
+    expect($promocodesForUser->count())->toEqual(1);
+    expect($promocodesForUser->first()->code)->toEqual($promocode->code);
+    expect(Promocode::query()->hasUsageForUser($otherUser)->count())->toEqual(0);
 });

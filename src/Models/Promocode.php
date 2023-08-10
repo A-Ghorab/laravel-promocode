@@ -94,9 +94,22 @@ class Promocode extends Model
         $builder->whereNull('total_usages')->orWhereHas('usages', operator: '<', count: DB::raw('total_usages'));
     }
 
-    public function scopeHasUsageForUser(Builder $builder, User $user = null): void
+    public function scopeHasUsageForUser(Builder $builder, User $user): void
     {
-        $builder->hasUsage()->where(fn (Builder $builder) => $builder->where('multi_use', true)->orWhereDoesntHave('usages', fn (Builder $builder) => $builder->where(config('promocodes.models.promocode_usage_table.user_id_foreign_id'), $user->getAuthIdentifier())));
+        $builder
+            ->hasUsage()
+            ->where(fn (Builder $builder) => $builder->where('multi_use', true)->orWhereDoesntHave('usages', fn (Builder $builder) => $builder->where(config('promocodes.models.promocode_usage_table.user_id_foreign_id'), $user->getAuthIdentifier())))
+            ->where(fn (Builder $builder) => $builder->notBounded()->orWhere(config('promocodes.models.promocodes.bound_to_user_id_foreign_id'), $user->getAuthIdentifier()));
+    }
+
+    public function scopeHasUsageForAnyone(Builder $builder): void
+    {
+        $builder->hasUsage()->notBounded();
+    }
+
+    public function scopeNotBounded(Builder $builder): void 
+    {
+        $builder->where(fn (Builder $builder) => $builder->whereNull(config('promocodes.models.promocodes.bound_to_user_id_foreign_id')));
     }
 
     public function scopeFindByCode(Builder $builder, string $code): Promocode
