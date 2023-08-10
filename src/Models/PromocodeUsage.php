@@ -2,11 +2,20 @@
 
 namespace AGhorab\LaravelPromocode\Models;
 
+use AGhorab\LaravelPromocode\Database\Factories\PromocodeUsageFactory;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Config;
 
 class PromocodeUsage extends Model
 {
+    use HasFactory;
+
+    protected static function newFactory()
+    {
+        return new PromocodeUsageFactory();
+    }
+
     public function __construct(array $attributes = [])
     {
         parent::__construct($attributes);

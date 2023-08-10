@@ -1,6 +1,9 @@
 <?php
 
+namespace AGhorab\LaravelPromocode\Traits;
+
 use AGhorab\LaravelPromocode\Models\Promocode;
+use Exception;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Support\Facades\Auth;
 

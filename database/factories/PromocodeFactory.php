@@ -50,4 +50,40 @@ class PromocodeFactory extends Factory
             ];
         });
     }
+
+    public function unlimited(): Factory
+    {
+        return $this->state(function (array $attributes) {
+            return [
+                'total_usages' => null,
+            ];
+        });
+    }
+
+    public function totalUsage(int $totalUsage): Factory
+    {
+        return $this->state(function (array $attributes) use ($totalUsage) {
+            return [
+                'total_usages' => $totalUsage,
+            ];
+        });
+    }
+
+    public function singleUse(): Factory
+    {
+        return $this->state(function (array $attributes) {
+            return [
+                'multi_use' => false,
+            ];
+        });
+    }
+
+    public function multiUse(): Factory
+    {
+        return $this->state(function (array $attributes) {
+            return [
+                'multi_use' => true,
+            ];
+        });
+    }
 }

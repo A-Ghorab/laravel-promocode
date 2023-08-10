@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User;
+use Illuminate\Support\Facades\DB;
 
 /**
  * App\Models\Promocode
@@ -21,7 +22,7 @@ use Illuminate\Foundation\Auth\User;
  * @property \Illuminate\Support\Carbon|null $expired_at
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read int $usages_count
+ * @property-read int|null $usages_count
  *
  * @method static \Illuminate\Database\Eloquent\Builder|Promocode newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Promocode newQuery()
@@ -88,6 +89,16 @@ class Promocode extends Model
         $builder->whereNull('expired_at')->orWhere('expired_at', '>', now());
     }
 
+    public function scopeHasUsage(Builder $builder): void
+    {
+        $builder->whereNull('total_usages')->orWhereHas('usages', operator: '<', count: DB::raw('total_usages'));
+    }
+
+    public function scopeHasUsageForUser(Builder $builder, User $user = null): void
+    {
+        $builder->hasUsage()->where(fn (Builder $builder) => $builder->where('multi_use', true)->orWhereDoesntHave('usages', fn (Builder $builder) => $builder->where(config('promocodes.models.promocode_usage_table.user_id_foreign_id'), $user->getAuthIdentifier())));
+    }
+
     public function scopeFindByCode(Builder $builder, string $code): Promocode
     {
         return $builder->where('code', $code)->firstOrFail();
@@ -105,6 +116,10 @@ class Promocode extends Model
 
     public function hasUsagesLeft(): bool
     {
+        if ($this->usages_count === null) {
+            $this->loadCount('usages');
+        }
+
         return $this->isUnlimited() || ($this->total_usages - $this->usages_count) > 0;
     }
 
