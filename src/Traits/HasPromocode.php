@@ -2,32 +2,31 @@
 
 namespace AGhorab\LaravelPromocode\Traits;
 
+use AGhorab\LaravelPromocode\Exceptions\PromocodeAlreadyApplied;
+use AGhorab\LaravelPromocode\Exceptions\PromocodeNotAllowedForUser;
+use AGhorab\LaravelPromocode\Exceptions\PromocodeUsageExceeded;
 use AGhorab\LaravelPromocode\Models\Promocode;
-use Exception;
-use Illuminate\Contracts\Auth\Authenticatable;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Foundation\Auth\User;
 
 trait HasPromocode
 {
-    public function applyPromocodeForCurrentUser(string $code)
+    public function applyPromocode(string $code)
     {
-        return $this->applyPromocode($code, Auth::authenticate());
-    }
+        /** @var User */
+        $user = $this;
 
-    public function applyPromocode(string $code, Authenticatable $user)
-    {
         /** @var Promocode */
         $promocode = getPromocodeModel()::findByCode($code);
         if (! $promocode->allowedForUser($user)) {
-            throw new Exception('Not Allowed for user');
+            throw new PromocodeNotAllowedForUser($code, $user);
         }
 
         if (! $promocode->hasUsagesLeft()) {
-            throw new Exception('No Usage Left');
+            throw new PromocodeUsageExceeded($code);
         }
 
         if (! $promocode->multi_use && $promocode->appliedByUser($user)) {
-            throw new Exception('User already applied for them');
+            throw new PromocodeAlreadyApplied($code, $user);
         }
 
         $promocodeUsageClass = getPromocodeUsageModel();

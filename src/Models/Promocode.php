@@ -107,7 +107,7 @@ class Promocode extends Model
         $builder->hasUsage()->notBounded();
     }
 
-    public function scopeNotBounded(Builder $builder): void 
+    public function scopeNotBounded(Builder $builder): void
     {
         $builder->where(fn (Builder $builder) => $builder->whereNull(config('promocodes.models.promocodes.bound_to_user_id_foreign_id')));
     }
