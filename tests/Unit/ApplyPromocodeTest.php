@@ -1,6 +1,7 @@
 <?php
 
 use AGhorab\LaravelPromocode\Exceptions\PromocodeAlreadyApplied;
+use AGhorab\LaravelPromocode\Exceptions\PromocodeExpired;
 use AGhorab\LaravelPromocode\Exceptions\PromocodeNotAllowedForUser;
 use AGhorab\LaravelPromocode\Exceptions\PromocodeUsageExceeded;
 use AGhorab\LaravelPromocode\Models\Promocode;
@@ -38,3 +39,14 @@ it('Promocode Already Applied', function () {
     $user->applyPromocode($promocode->code);
 
 })->throws(PromocodeAlreadyApplied::class);
+
+it('Promocode Already Expired', function () {
+    /** @var Promocode */
+    $promocode = Promocode::factory()->singleUse()->totalUsage(2)->expired()->createOne();
+
+    /** @var User */
+    $user = User::factory()->createOne();
+
+    $user->applyPromocode($promocode->code);
+
+})->throws(PromocodeExpired::class);

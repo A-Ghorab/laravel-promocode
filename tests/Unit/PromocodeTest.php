@@ -78,3 +78,20 @@ it('validate bounded promocode is only visible to the one issuer only', function
     expect($promocodesForUser->first()->code)->toEqual($promocode->code);
     expect(Promocode::query()->hasUsageForUser($otherUser)->count())->toEqual(0);
 });
+
+it('get promocode that avaliable for every one and ignore bounded', function () {
+    $user = User::factory()->createOne();
+
+    Promocode::factory()->singleUse()->boundedUser($user)->createOne();
+    Promocode::factory()->singleUse()->count(3)->create();
+
+    expect(Promocode::hasUsageForAnyone()->count())->toEqual(3);
+});
+
+it('test storing extra info in the details section', function () {
+
+    /** @var Promocode */
+    $promocode = Promocode::factory()->singleUse()->details(['discount' => '20%'])->createOne();
+
+    expect($promocode->getDetail('discount'))->toEqual('20%');
+});

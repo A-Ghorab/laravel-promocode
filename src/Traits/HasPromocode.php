@@ -3,6 +3,7 @@
 namespace AGhorab\LaravelPromocode\Traits;
 
 use AGhorab\LaravelPromocode\Exceptions\PromocodeAlreadyApplied;
+use AGhorab\LaravelPromocode\Exceptions\PromocodeExpired;
 use AGhorab\LaravelPromocode\Exceptions\PromocodeNotAllowedForUser;
 use AGhorab\LaravelPromocode\Exceptions\PromocodeUsageExceeded;
 use AGhorab\LaravelPromocode\Models\Promocode;
@@ -17,6 +18,11 @@ trait HasPromocode
 
         /** @var Promocode */
         $promocode = getPromocodeModel()::findByCode($code);
+
+        if ($promocode->isExpired()) {
+            throw new PromocodeExpired($code);
+        }
+
         if (! $promocode->allowedForUser($user)) {
             throw new PromocodeNotAllowedForUser($code, $user);
         }

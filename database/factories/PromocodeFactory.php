@@ -30,7 +30,6 @@ class PromocodeFactory extends Factory
             'code' => $this->faker->unique()->text(9),
             'total_usages' => $this->faker->numberBetween(1, 1000),
             'multi_use' => $this->faker->boolean,
-            'expired_at' => $this->faker->optional()->dateTime('+2 months'),
         ];
     }
 
@@ -93,6 +92,15 @@ class PromocodeFactory extends Factory
         return $this->state(function (array $attributes) use ($user) {
             return [
                 config('promocodes.models.promocodes.bound_to_user_id_foreign_id') => $user->getAuthIdentifier(),
+            ];
+        });
+    }
+
+    public function details(array $details): Factory
+    {
+        return $this->state(function (array $attributes) use ($details) {
+            return [
+                'details' => $details,
             ];
         });
     }
