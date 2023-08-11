@@ -12,8 +12,6 @@ use Illuminate\Foundation\Auth\User;
 use Illuminate\Support\Facades\DB;
 
 /**
- * App\Models\Promocode
- *
  * @property int $id
  * @property string $code
  * @property int|null $total_usages
