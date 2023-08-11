@@ -22,12 +22,12 @@ use Illuminate\Support\Facades\DB;
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read int|null $usages_count
  *
- * @method static \Illuminate\Database\Eloquent\Builder|Promocode newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|Promocode newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|Promocode query()
- * @method static \Illuminate\Database\Eloquent\Builder|Promocode whereExpiredAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Promocode available()
- * @method static Promocode findByCode(string $code)
+ * @method static \Illuminate\Database\Eloquent\Builder|self available()
+ * @method static \Illuminate\Database\Eloquent\Builder|self hasUsage()
+ * @method static \Illuminate\Database\Eloquent\Builder|self hasUsageForUser()
+ * @method static \Illuminate\Database\Eloquent\Builder|self hasUsageForAnyone()
+ * @method static \Illuminate\Database\Eloquent\Builder|self notBounded()
+ * @method static self findByCode(string $code)
  */
 class Promocode extends Model
 {
