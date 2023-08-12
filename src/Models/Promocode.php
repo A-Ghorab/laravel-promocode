@@ -4,11 +4,11 @@ namespace AGhorab\LaravelPromocode\Models;
 
 use AGhorab\LaravelPromocode\Database\Factories\PromocodeFactory;
 use function AGhorab\LaravelPromocode\getBoundedUserModelName;
+use function AGhorab\LaravelPromocode\getPromocodeRedemptionModel;
+use function AGhorab\LaravelPromocode\getPromocodeRedemptionTablePromocodeIdField;
+use function AGhorab\LaravelPromocode\getPromocodeRedemptionTableUserIdField;
 use function AGhorab\LaravelPromocode\getPromocodeTableName;
 use function AGhorab\LaravelPromocode\getPromocodeTableUserIdFieldName;
-use function AGhorab\LaravelPromocode\getPromocodeUsageModel;
-use function AGhorab\LaravelPromocode\getPromocodeUsageTablePromocodeIdField;
-use function AGhorab\LaravelPromocode\getPromocodeUsageTableUserIdField;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -26,7 +26,7 @@ use Illuminate\Support\Facades\DB;
  * @property \Illuminate\Support\Carbon|null $expired_at
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read int|null $usages_count
+ * @property-read int|null $redemptions_count
  *
  * @method static \Illuminate\Database\Eloquent\Builder|self available()
  * @method static \Illuminate\Database\Eloquent\Builder|self hasUsage()
@@ -63,7 +63,7 @@ class Promocode extends Model
      *
      * @var array<string>
      */
-    protected $withCount = ['usages'];
+    protected $withCount = ['redemptions'];
 
     /**
      * @param  array<string,scalar>  $attributes
@@ -92,13 +92,13 @@ class Promocode extends Model
     }
 
     /**
-     * @return HasMany<PromocodeUsage>
+     * @return HasMany<PromocodeRedemption>
      */
-    public function usages(): HasMany
+    public function redemptions(): HasMany
     {
         return $this->hasMany(
-            getPromocodeUsageModel(),
-            getPromocodeUsageTablePromocodeIdField()
+            getPromocodeRedemptionModel(),
+            getPromocodeRedemptionTablePromocodeIdField()
         );
     }
 
@@ -115,7 +115,7 @@ class Promocode extends Model
      */
     public function scopeHasUsage(Builder $builder): void
     {
-        $builder->whereNull('total_usages')->orWhereHas('usages', operator: '<', count: DB::raw('total_usages'));
+        $builder->whereNull('total_usages')->orWhereHas('redemptions', operator: '<', count: DB::raw('total_usages'));
     }
 
     /**
@@ -125,7 +125,7 @@ class Promocode extends Model
     {
         $builder
             ->hasUsage()
-            ->where(fn (Builder $builder) => $builder->where('multi_use', true)->orWhereDoesntHave('usages', fn (Builder $builder) => $builder->where(getPromocodeUsageTableUserIdField(), $user->getAuthIdentifier())))
+            ->where(fn (Builder $builder) => $builder->where('multi_use', true)->orWhereDoesntHave('redemptions', fn (Builder $builder) => $builder->where(getPromocodeRedemptionTableUserIdField(), $user->getAuthIdentifier())))
             ->where(fn (Builder $builder) => $builder->notBounded()->orWhere(getPromocodeTableUserIdFieldName(), $user->getAuthIdentifier()));
     }
 
@@ -167,11 +167,11 @@ class Promocode extends Model
 
     public function hasUsagesLeft(): bool
     {
-        if ($this->usages_count === null) {
-            $this->loadCount('usages');
+        if ($this->redemptions_count === null) {
+            $this->loadCount('redemptions');
         }
 
-        return $this->isUnlimited() || ($this->total_usages - $this->usages_count) > 0;
+        return $this->isUnlimited() || ($this->total_usages - $this->redemptions_count) > 0;
     }
 
     public function allowedForUser(User $user): bool
@@ -181,7 +181,7 @@ class Promocode extends Model
 
     public function appliedByUser(User $user): bool
     {
-        return $this->whereRelation('usages', getPromocodeUsageTableUserIdField(), $user->id)->exists();
+        return $this->whereRelation('redemptions', getPromocodeRedemptionTableUserIdField(), $user->id)->exists();
     }
 
     public function getDetail(string $key, mixed $fallback = null): mixed

@@ -2,24 +2,24 @@
 
 namespace AGhorab\LaravelPromocode\Database\Factories;
 
-use function AGhorab\LaravelPromocode\getPromocodeUsageTableUserIdField;
-use AGhorab\LaravelPromocode\Models\PromocodeUsage;
+use function AGhorab\LaravelPromocode\getPromocodeRedemptionTableUserIdField;
+use AGhorab\LaravelPromocode\Models\PromocodeRedemption;
 use AGhorab\LaravelPromocode\Tests\MockModels\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Auth\User as AuthUser;
 
 /**
- * @extends Factory<PromocodeUsage>
+ * @extends Factory<PromocodeRedemption>
  */
-class PromocodeUsageFactory extends Factory
+class PromocodeRedemptionFactory extends Factory
 {
     /**
      * The name of the factory's corresponding model.
      *
-     * @var class-string<Model|PromocodeUsage>
+     * @var class-string<Model|PromocodeRedemption>
      */
-    protected $model = PromocodeUsage::class;
+    protected $model = PromocodeRedemption::class;
 
     /**
      * Define the model's default state.
@@ -29,7 +29,7 @@ class PromocodeUsageFactory extends Factory
     public function definition(): array
     {
         return [
-            getPromocodeUsageTableUserIdField() => User::all()->random()->getAuthIdentifier(),
+            getPromocodeRedemptionTableUserIdField() => User::all()->random()->getAuthIdentifier(),
         ];
     }
 
@@ -37,7 +37,7 @@ class PromocodeUsageFactory extends Factory
     {
         return $this->state(function (array $attributes) use ($user) {
             return [
-                getPromocodeUsageTableUserIdField() => $user->getAuthIdentifier(),
+                getPromocodeRedemptionTableUserIdField() => $user->getAuthIdentifier(),
             ];
         });
     }

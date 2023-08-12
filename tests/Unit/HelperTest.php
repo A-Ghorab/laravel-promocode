@@ -2,12 +2,12 @@
 
 use function AGhorab\LaravelPromocode\getBoundedUserModelName;
 use function AGhorab\LaravelPromocode\getPromocodeModel;
+use function AGhorab\LaravelPromocode\getPromocodeRedemptionModel;
+use function AGhorab\LaravelPromocode\getPromocodeRedemptionTable;
+use function AGhorab\LaravelPromocode\getPromocodeRedemptionTablePromocodeIdField;
+use function AGhorab\LaravelPromocode\getPromocodeRedemptionTableUserIdField;
 use function AGhorab\LaravelPromocode\getPromocodeTableName;
 use function AGhorab\LaravelPromocode\getPromocodeTableUserIdFieldName;
-use function AGhorab\LaravelPromocode\getPromocodeUsageModel;
-use function AGhorab\LaravelPromocode\getPromocodeUsageTable;
-use function AGhorab\LaravelPromocode\getPromocodeUsageTablePromocodeIdField;
-use function AGhorab\LaravelPromocode\getPromocodeUsageTableUserIdField;
 use function AGhorab\LaravelPromocode\getScalarValue;
 use AGhorab\LaravelPromocode\Models\Promocode;
 use AGhorab\LaravelPromocode\Tests\MockModels\User;
@@ -19,9 +19,9 @@ it('Model should extends Promocode', function () {
 })->throws(Exception::class);
 
 it('Model should extends Promocode Usage', function () {
-    config()->set('promocodes.models.promocode_usage_table.model', User::class);
+    config()->set('promocodes.models.promocode_redemption_table.model', User::class);
 
-    getPromocodeUsageModel();
+    getPromocodeRedemptionModel();
 })->throws(Exception::class);
 
 it('Model should extends User', function () {
@@ -37,9 +37,9 @@ it('Promocodes Table name should be string', function () {
 })->throws(Exception::class);
 
 it('Promocode Usage Table name should be string', function () {
-    config()->set('promocodes.models.promocode_usage_table.table_name', 123);
+    config()->set('promocodes.models.promocode_redemption_table.table_name', 123);
 
-    getPromocodeUsageTable();
+    getPromocodeRedemptionTable();
 })->throws(Exception::class);
 
 it('Promocode Table User id field name', function () {
@@ -49,15 +49,15 @@ it('Promocode Table User id field name', function () {
 })->throws(Exception::class);
 
 it('Promocode Usage Table User id field name', function () {
-    config()->set('promocodes.models.promocode_usage_table.user_id_foreign_id', 123);
+    config()->set('promocodes.models.promocode_redemption_table.user_id_foreign_id', 123);
 
-    getPromocodeUsageTableUserIdField();
+    getPromocodeRedemptionTableUserIdField();
 })->throws(Exception::class);
 
 it('Promocode Usage Table Promocode id field name', function () {
-    config()->set('promocodes.models.promocode_usage_table.promocode_foreign_id', 123);
+    config()->set('promocodes.models.promocode_redemption_table.promocode_foreign_id', 123);
 
-    getPromocodeUsageTablePromocodeIdField();
+    getPromocodeRedemptionTablePromocodeIdField();
 })->throws(Exception::class);
 
 it('GetScalar would throw an error if an array is sent', function () {

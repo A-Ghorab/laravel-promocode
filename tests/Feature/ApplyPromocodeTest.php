@@ -11,5 +11,5 @@ it('test user can apply on promocode', function () {
 
     $user->applyPromocode($promocode->code);
 
-    expect($promocode->usages()->count())->toEqual(1);
+    expect($promocode->redemptions()->count())->toEqual(1);
 });

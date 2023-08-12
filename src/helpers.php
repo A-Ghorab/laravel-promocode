@@ -3,7 +3,7 @@
 namespace AGhorab\LaravelPromocode;
 
 use AGhorab\LaravelPromocode\Models\Promocode;
-use AGhorab\LaravelPromocode\Models\PromocodeUsage;
+use AGhorab\LaravelPromocode\Models\PromocodeRedemption;
 use Exception;
 use Illuminate\Foundation\Auth\User;
 
@@ -45,26 +45,26 @@ function getPromocodeTableUserIdFieldName(): string
 }
 
 /**
- * @return class-string<PromocodeUsage>
+ * @return class-string<PromocodeRedemption>
  */
-function getPromocodeUsageModel()
+function getPromocodeRedemptionModel()
 {
-    /** @var class-string<PromocodeUsage> */
-    $promocodeUsageClass = config('promocodes.models.promocode_usage_table.model');
+    /** @var class-string<PromocodeRedemption> */
+    $promocodeRedemptionClass = config('promocodes.models.promocode_redemption_table.model');
 
-    if (! is_a($promocodeUsageClass, PromocodeUsage::class, true)) {
-        throw new \Exception("Class doesn't extend Promocode Usage Model");
+    if (! is_a($promocodeRedemptionClass, PromocodeRedemption::class, true)) {
+        throw new \Exception("Class doesn't extend Promocode Redemption Model");
     }
 
-    return $promocodeUsageClass;
+    return $promocodeRedemptionClass;
 }
 
 /**
- * @return class-string<PromocodeUsage>
+ * @return class-string<PromocodeRedemption>
  */
 function getBoundedUserModelName()
 {
-    /** @var class-string<PromocodeUsage> */
+    /** @var class-string<PromocodeRedemption> */
     $userClass = config('promocodes.models.users.model');
 
     if (! is_a($userClass, User::class, true)) {
@@ -74,9 +74,9 @@ function getBoundedUserModelName()
     return $userClass;
 }
 
-function getPromocodeUsageTable(): string
+function getPromocodeRedemptionTable(): string
 {
-    $tableName = config('promocodes.models.promocode_usage_table.table_name');
+    $tableName = config('promocodes.models.promocode_redemption_table.table_name');
 
     if (! is_string($tableName)) {
         throw new \Exception("Table name isn't string");
@@ -85,9 +85,9 @@ function getPromocodeUsageTable(): string
     return $tableName;
 }
 
-function getPromocodeUsageTableUserIdField(): string
+function getPromocodeRedemptionTableUserIdField(): string
 {
-    $foreignId = config('promocodes.models.promocode_usage_table.user_id_foreign_id');
+    $foreignId = config('promocodes.models.promocode_redemption_table.user_id_foreign_id');
 
     if (! is_string($foreignId)) {
         throw new \Exception("Foreign name isn't string");
@@ -96,9 +96,9 @@ function getPromocodeUsageTableUserIdField(): string
     return $foreignId;
 }
 
-function getPromocodeUsageTablePromocodeIdField(): string
+function getPromocodeRedemptionTablePromocodeIdField(): string
 {
-    $foreignId = config('promocodes.models.promocode_usage_table.promocode_foreign_id');
+    $foreignId = config('promocodes.models.promocode_redemption_table.promocode_foreign_id');
 
     if (! is_string($foreignId)) {
         throw new \Exception("Foreign name isn't string");

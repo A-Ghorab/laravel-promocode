@@ -15,9 +15,9 @@ return [
             'id' => 'id',
         ],
 
-        'promocode_usage_table' => [
-            'model' => \AGhorab\LaravelPromocode\Models\PromocodeUsage::class,
-            'table_name' => 'promocode_usage',
+        'promocode_redemption_table' => [
+            'model' => \AGhorab\LaravelPromocode\Models\PromocodeRedemption::class,
+            'table_name' => 'promocode_redemption',
             'promocode_foreign_id' => 'promocode_id',
             'user_id_foreign_id' => 'user_id',
         ],

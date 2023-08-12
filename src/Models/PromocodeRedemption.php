@@ -2,23 +2,23 @@
 
 namespace AGhorab\LaravelPromocode\Models;
 
-use AGhorab\LaravelPromocode\Database\Factories\PromocodeUsageFactory;
+use AGhorab\LaravelPromocode\Database\Factories\PromocodeRedemptionFactory;
 use function AGhorab\LaravelPromocode\getPromocodeModel;
-use function AGhorab\LaravelPromocode\getPromocodeUsageTable;
-use function AGhorab\LaravelPromocode\getPromocodeUsageTablePromocodeIdField;
+use function AGhorab\LaravelPromocode\getPromocodeRedemptionTable;
+use function AGhorab\LaravelPromocode\getPromocodeRedemptionTablePromocodeIdField;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class PromocodeUsage extends Model
+class PromocodeRedemption extends Model
 {
     use HasFactory;
 
     protected $guarded = [];
 
-    protected static function newFactory(): PromocodeUsageFactory
+    protected static function newFactory(): PromocodeRedemptionFactory
     {
-        return new PromocodeUsageFactory();
+        return new PromocodeRedemptionFactory();
     }
 
     /**
@@ -28,17 +28,17 @@ class PromocodeUsage extends Model
     {
         parent::__construct($attributes);
 
-        $this->setTable(getPromocodeUsageTable());
+        $this->setTable(getPromocodeRedemptionTable());
     }
 
     /**
-     * @return BelongsTo<PromocodeUsage,Promocode>
+     * @return BelongsTo<PromocodeRedemption,Promocode>
      */
     public function promocode(): BelongsTo
     {
         return $this->belongsTo(
             getPromocodeModel(),
-            getPromocodeUsageTablePromocodeIdField(),
+            getPromocodeRedemptionTablePromocodeIdField(),
         );
     }
 }

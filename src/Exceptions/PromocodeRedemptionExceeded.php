@@ -2,7 +2,7 @@
 
 namespace AGhorab\LaravelPromocode\Exceptions;
 
-class PromocodeUsageExceeded extends PromocodeBaseValidation
+class PromocodeRedemptionExceeded extends PromocodeBaseValidation
 {
     public function __construct(string $code)
     {

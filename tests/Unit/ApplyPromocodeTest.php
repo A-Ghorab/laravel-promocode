@@ -3,9 +3,9 @@
 use AGhorab\LaravelPromocode\Exceptions\PromocodeAlreadyApplied;
 use AGhorab\LaravelPromocode\Exceptions\PromocodeExpired;
 use AGhorab\LaravelPromocode\Exceptions\PromocodeNotAllowedForUser;
-use AGhorab\LaravelPromocode\Exceptions\PromocodeUsageExceeded;
+use AGhorab\LaravelPromocode\Exceptions\PromocodeRedemptionExceeded;
 use AGhorab\LaravelPromocode\Models\Promocode;
-use AGhorab\LaravelPromocode\Models\PromocodeUsage;
+use AGhorab\LaravelPromocode\Models\PromocodeRedemption;
 use AGhorab\LaravelPromocode\Tests\MockModels\User;
 
 it('Promocode Bounded to another user', function () {
@@ -19,13 +19,13 @@ it('Promocode Bounded to another user', function () {
 
 it('Promocode Usage Exceeded', function () {
     /** @var Promocode */
-    $promocode = Promocode::factory()->has(PromocodeUsage::factory()->forUser(User::factory()->createOne())->count(1), 'usages')->singleUse()->totalUsage(1)->createOne();
+    $promocode = Promocode::factory()->has(PromocodeRedemption::factory()->forUser(User::factory()->createOne())->count(1), 'redemptions')->singleUse()->totalUsage(1)->createOne();
 
     /** @var User */
     $user = User::factory()->createOne();
 
     $user->applyPromocode($promocode->code);
-})->throws(PromocodeUsageExceeded::class);
+})->throws(PromocodeRedemptionExceeded::class);
 
 it('Promocode Already Applied', function () {
     /** @var Promocode */
@@ -55,7 +55,7 @@ it('Access Promocode from User', function () {
     $user = User::factory()->createOne();
 
     /** @var Promocode */
-    Promocode::factory()->has(PromocodeUsage::factory()->forUser($user)->count(1), 'usages')->singleUse()->totalUsage(1)->createOne();
+    Promocode::factory()->has(PromocodeRedemption::factory()->forUser($user)->count(1), 'redemptions')->singleUse()->totalUsage(1)->createOne();
 
     expect($user->promocodes()->count())->toEqual(1);
 });

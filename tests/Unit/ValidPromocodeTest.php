@@ -1,7 +1,7 @@
 <?php
 
 use AGhorab\LaravelPromocode\Models\Promocode;
-use AGhorab\LaravelPromocode\Models\PromocodeUsage;
+use AGhorab\LaravelPromocode\Models\PromocodeRedemption;
 use AGhorab\LaravelPromocode\Rules\ValidPromocode;
 use AGhorab\LaravelPromocode\Tests\MockModels\User;
 use Illuminate\Validation\ValidationException;
@@ -32,7 +32,7 @@ it('Promocode Bounded to another user', function () {
 
 it('Promocode Usage Exceeded', function () {
     /** @var Promocode */
-    $promocode = Promocode::factory()->has(PromocodeUsage::factory()->forUser(User::factory()->createOne())->count(1), 'usages')->singleUse()->totalUsage(1)->createOne();
+    $promocode = Promocode::factory()->has(PromocodeRedemption::factory()->forUser(User::factory()->createOne())->count(1), 'redemptions')->singleUse()->totalUsage(1)->createOne();
 
     /** @var User */
     $user = User::factory()->createOne();
