@@ -9,9 +9,8 @@ parameters:
     level: 6
 
     ignoreErrors:
-        - '#Parameter \$count of method Illuminate\\Database\\Eloquent\\Builder<Illuminate\\Database\\Eloquent\\Model>::orWhereHas\(\) expects int, Illuminate\\Contracts\\Database\\Query\\Expression given#'
-        - '#Call to an undefined method Illuminate\\Database\\Eloquent\\Builder::hasUsage\(\)#'
-        - '#Call to an undefined method Illuminate\\Database\\Eloquent\\Builder::notBounded\(\)#'
+        - '#Parameter \$count of method Illuminate\\Database\\Eloquent\\Builder<AGhorab\\LaravelPromocode\\Models\\Promocode>::orWhereHas\(\) expects int, Illuminate\\Contracts\\Database\\Query\\Expression given#'
+
 #
 #    excludePaths:
 #        - ./*/*/FileToBeExcluded.php

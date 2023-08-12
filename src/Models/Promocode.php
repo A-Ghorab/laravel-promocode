@@ -43,7 +43,7 @@ class Promocode extends Model
     /**
      * The attributes that should be cast.
      *
-     * @var array<string, string>
+     * @var array<string,string>
      */
     protected $casts = [
         'expired_at' => 'datetime',
@@ -52,8 +52,16 @@ class Promocode extends Model
         'details' => 'json',
     ];
 
+    /**
+     * The relationship counts that should be eager loaded on every query.
+     *
+     * @var array<string>
+     */
     protected $withCount = ['usages'];
 
+    /**
+     * @param  array<string,scalar>  $attributes
+     */
     public function __construct(array $attributes = [])
     {
         parent::__construct($attributes);
@@ -61,11 +69,14 @@ class Promocode extends Model
         $this->setTable(config('promocodes.models.promocodes.table_name'));
     }
 
-    protected static function newFactory()
+    protected static function newFactory(): PromocodeFactory
     {
         return new PromocodeFactory();
     }
 
+    /**
+     * @return BelongsTo<Promocode,User>
+     */
     public function boundedUser(): BelongsTo
     {
         return $this->belongsTo(
@@ -74,6 +85,9 @@ class Promocode extends Model
         );
     }
 
+    /**
+     * @return HasMany<PromocodeUsage>
+     */
     public function usages(): HasMany
     {
         return $this->hasMany(
@@ -82,16 +96,25 @@ class Promocode extends Model
         );
     }
 
+    /**
+     * @param  Builder<Promocode>  $builder
+     */
     public function scopeAvailable(Builder $builder): void
     {
         $builder->whereNull('expired_at')->orWhere('expired_at', '>', now());
     }
 
+    /**
+     * @param  Builder<Promocode>  $builder
+     */
     public function scopeHasUsage(Builder $builder): void
     {
         $builder->whereNull('total_usages')->orWhereHas('usages', operator: '<', count: DB::raw('total_usages'));
     }
 
+    /**
+     * @param  Builder<Promocode>  $builder
+     */
     public function scopeHasUsageForUser(Builder $builder, User $user): void
     {
         $builder
@@ -100,17 +123,28 @@ class Promocode extends Model
             ->where(fn (Builder $builder) => $builder->notBounded()->orWhere(config('promocodes.models.promocodes.bound_to_user_id_foreign_id'), $user->getAuthIdentifier()));
     }
 
+    /**
+     * @param  Builder<Promocode>  $builder
+     */
     public function scopeHasUsageForAnyone(Builder $builder): void
     {
         $builder->hasUsage()->notBounded();
     }
 
+    /**
+     * @param  Builder<Promocode>  $builder
+     */
     public function scopeNotBounded(Builder $builder): void
     {
-        $builder->where(fn (Builder $builder) => $builder->whereNull(config('promocodes.models.promocodes.bound_to_user_id_foreign_id')));
+        $builder->where(function (Builder $builder) {
+            $builder->whereNull(config('promocodes.models.promocodes.bound_to_user_id_foreign_id'));
+        });
     }
 
-    public function scopeFindByCode(Builder $builder, string $code)
+    /**
+     * @param  Builder<Promocode>  $builder
+     */
+    public function scopeFindByCode(Builder $builder, string $code): self
     {
         return $builder->where('code', $code)->firstOrFail();
     }

@@ -6,11 +6,11 @@ use AGhorab\LaravelPromocode\Rules\ValidPromocode;
 use AGhorab\LaravelPromocode\Tests\MockModels\User;
 use Illuminate\Validation\ValidationException;
 
-it('validate promocode as string', function () {    
+it('validate promocode as string', function () {
     validator([
-        'code' => 123
+        'code' => 123,
     ], [
-        'code' => [new ValidPromocode()]
+        'code' => [new ValidPromocode()],
     ])->validate();
 
 })->throws(ValidationException::class);
@@ -21,11 +21,11 @@ it('Promocode Bounded to another user', function () {
 
     /** @var Promocode */
     $promocode = Promocode::factory()->singleUse()->boundedUser($user)->createOne();
-    
+
     validator([
-        'code' => $promocode->code
+        'code' => $promocode->code,
     ], [
-        'code' => [new ValidPromocode($otherUser)]
+        'code' => [new ValidPromocode($otherUser)],
     ])->validate();
 
 })->throws(ValidationException::class);
@@ -36,11 +36,11 @@ it('Promocode Usage Exceeded', function () {
 
     /** @var User */
     $user = User::factory()->createOne();
-    
+
     validator([
-        'code' => $promocode->code
+        'code' => $promocode->code,
     ], [
-        'code' => [new ValidPromocode($user)]
+        'code' => [new ValidPromocode($user)],
     ])->validate();
 
 })->throws(ValidationException::class);
@@ -55,9 +55,9 @@ it('Promocode Already Applied', function () {
     $user->applyPromocode($promocode->code);
 
     validator([
-        'code' => $promocode->code
+        'code' => $promocode->code,
     ], [
-        'code' => [new ValidPromocode($user)]
+        'code' => [new ValidPromocode($user)],
     ])->validate();
 
 })->throws(ValidationException::class);
@@ -70,9 +70,9 @@ it('Promocode Already Expired', function () {
     $user = User::factory()->createOne();
 
     validator([
-        'code' => $promocode->code
+        'code' => $promocode->code,
     ], [
-        'code' => [new ValidPromocode($user)]
+        'code' => [new ValidPromocode($user)],
     ])->validate();
 
 })->throws(ValidationException::class);
