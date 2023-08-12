@@ -6,7 +6,6 @@ use AGhorab\LaravelPromocode\Database\Factories\PromocodeUsageFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Support\Facades\Config;
 
 class PromocodeUsage extends Model
 {
@@ -26,7 +25,7 @@ class PromocodeUsage extends Model
     {
         parent::__construct($attributes);
 
-        $this->setTable(Config::get('promocodes.models.promocode_usage_table.table_name'));
+        $this->setTable(config('promocodes.models.promocode_usage_table.table_name'));
     }
 
     /**
