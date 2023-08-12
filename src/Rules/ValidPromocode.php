@@ -7,6 +7,8 @@ use Closure;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Auth\User;
 
+use function AGhorab\LaravelPromocode\getPromocodeModel;
+
 class ValidPromocode implements ValidationRule
 {
     public function __construct(private ?User $user = null)

@@ -11,6 +11,8 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User;
 use Illuminate\Support\Facades\DB;
 
+use function AGhorab\LaravelPromocode\getPromocodeUsageModel;
+
 /**
  * @property int $id
  * @property string $code

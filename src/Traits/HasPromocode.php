@@ -9,6 +9,9 @@ use AGhorab\LaravelPromocode\Exceptions\PromocodeUsageExceeded;
 use AGhorab\LaravelPromocode\Models\Promocode;
 use Illuminate\Foundation\Auth\User;
 
+use function AGhorab\LaravelPromocode\getPromocodeModel;
+use function AGhorab\LaravelPromocode\getPromocodeUsageModel;
+
 trait HasPromocode
 {
     public function applyPromocode(string $code)

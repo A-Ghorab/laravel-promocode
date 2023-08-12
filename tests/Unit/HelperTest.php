@@ -2,6 +2,9 @@
 
 use AGhorab\LaravelPromocode\Tests\MockModels\User;
 
+use function AGhorab\LaravelPromocode\getPromocodeModel;
+use function AGhorab\LaravelPromocode\getPromocodeUsageModel;
+
 it('Model should extends Promocode', function () {
     config()->set('promocodes.models.promocodes.model', User::class);
 
