@@ -2,6 +2,7 @@
 
 namespace AGhorab\LaravelPromocode\Rules;
 
+use AGhorab\LaravelPromocode\Models\Promocode;
 use Closure;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Auth\User;

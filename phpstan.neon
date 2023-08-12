@@ -6,10 +6,12 @@ parameters:
         - src
 
     # Level 9 is the highest level
-    level: 5
+    level: 6
 
-#    ignoreErrors:
-#        - '#PHPDoc tag @var#'
+    ignoreErrors:
+        - '#Parameter \$count of method Illuminate\\Database\\Eloquent\\Builder<Illuminate\\Database\\Eloquent\\Model>::orWhereHas\(\) expects int, Illuminate\\Contracts\\Database\\Query\\Expression given#'
+        - '#Call to an undefined method Illuminate\\Database\\Eloquent\\Builder::hasUsage\(\)#'
+        - '#Call to an undefined method Illuminate\\Database\\Eloquent\\Builder::notBounded\(\)#'
 #
 #    excludePaths:
 #        - ./*/*/FileToBeExcluded.php

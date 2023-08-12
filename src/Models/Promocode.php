@@ -43,7 +43,7 @@ class Promocode extends Model
     /**
      * The attributes that should be cast.
      *
-     * @var array
+     * @var array<string, string>
      */
     protected $casts = [
         'expired_at' => 'datetime',
@@ -110,7 +110,7 @@ class Promocode extends Model
         $builder->where(fn (Builder $builder) => $builder->whereNull(config('promocodes.models.promocodes.bound_to_user_id_foreign_id')));
     }
 
-    public function scopeFindByCode(Builder $builder, string $code): Promocode
+    public function scopeFindByCode(Builder $builder, string $code)
     {
         return $builder->where('code', $code)->firstOrFail();
     }

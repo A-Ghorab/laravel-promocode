@@ -36,6 +36,7 @@
     },
     "scripts": {
         "test": "./vendor/bin/pest",
+        "test:coverage": "./vendor/bin/pest --coverage",
         "phpstan": "./vendor/bin/phpstan analyse",
         "pint": "./vendor/bin/pint",
         "post-autoload-dump": [
