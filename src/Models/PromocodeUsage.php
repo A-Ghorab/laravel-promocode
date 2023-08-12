@@ -3,6 +3,8 @@
 namespace AGhorab\LaravelPromocode\Models;
 
 use AGhorab\LaravelPromocode\Database\Factories\PromocodeUsageFactory;
+use function AGhorab\LaravelPromocode\getPromocodeModel;
+use function AGhorab\LaravelPromocode\getPromocodeUsageTable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -25,7 +27,7 @@ class PromocodeUsage extends Model
     {
         parent::__construct($attributes);
 
-        $this->setTable(config('promocodes.models.promocode_usage_table.table_name'));
+        $this->setTable(getPromocodeUsageTable());
     }
 
     /**
@@ -34,7 +36,7 @@ class PromocodeUsage extends Model
     public function promocode(): BelongsTo
     {
         return $this->belongsTo(
-            config('promocodes.models.promocodes.model'),
+            getPromocodeModel(),
             config('promocodes.models.promocode_usage_table.promocode_foreign_id'),
         );
     }

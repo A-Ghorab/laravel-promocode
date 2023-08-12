@@ -2,12 +2,11 @@
 
 namespace AGhorab\LaravelPromocode\Rules;
 
+use function AGhorab\LaravelPromocode\getPromocodeModel;
 use AGhorab\LaravelPromocode\Models\Promocode;
 use Closure;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Auth\User;
-
-use function AGhorab\LaravelPromocode\getPromocodeModel;
 
 class ValidPromocode implements ValidationRule
 {

@@ -3,6 +3,9 @@
 namespace AGhorab\LaravelPromocode\Models;
 
 use AGhorab\LaravelPromocode\Database\Factories\PromocodeFactory;
+use function AGhorab\LaravelPromocode\getPromocodeUsageModel;
+use function AGhorab\LaravelPromocode\getPromocodeUsageTableUserIdField;
+
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -10,8 +13,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User;
 use Illuminate\Support\Facades\DB;
-
-use function AGhorab\LaravelPromocode\getPromocodeUsageModel;
 
 /**
  * @property int $id
@@ -121,7 +122,7 @@ class Promocode extends Model
     {
         $builder
             ->hasUsage()
-            ->where(fn (Builder $builder) => $builder->where('multi_use', true)->orWhereDoesntHave('usages', fn (Builder $builder) => $builder->where(config('promocodes.models.promocode_usage_table.user_id_foreign_id'), $user->getAuthIdentifier())))
+            ->where(fn (Builder $builder) => $builder->where('multi_use', true)->orWhereDoesntHave('usages', fn (Builder $builder) => $builder->where(getPromocodeUsageTableUserIdField(), $user->getAuthIdentifier())))
             ->where(fn (Builder $builder) => $builder->notBounded()->orWhere(config('promocodes.models.promocodes.bound_to_user_id_foreign_id'), $user->getAuthIdentifier()));
     }
 
@@ -177,7 +178,7 @@ class Promocode extends Model
 
     public function appliedByUser(User $user): bool
     {
-        return $this->whereRelation('usages', config('promocodes.models.promocode_usage_table.user_id_foreign_id'), $user->id)->exists();
+        return $this->whereRelation('usages', getPromocodeUsageTableUserIdField(), $user->id)->exists();
     }
 
     public function getDetail(string $key, mixed $fallback = null): mixed

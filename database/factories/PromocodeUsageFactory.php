@@ -9,6 +9,8 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Auth\User as AuthUser;
 
+use function AGhorab\LaravelPromocode\getPromocodeUsageTableUserIdField;
+
 /**
  * @extends Factory<PromocodeUsage>
  */
@@ -30,7 +32,7 @@ class PromocodeUsageFactory extends Factory
     {
         return [
             // config('promocodes.models.promocode_usage_table.promocode_foreign_id') => Promocode::factory()->create()->getKey(),
-            config('promocodes.models.promocode_usage_table.user_id_foreign_id') => User::all()->random()->getAuthIdentifier(),
+            getPromocodeUsageTableUserIdField() => User::all()->random()->getAuthIdentifier(),
         ];
     }
 
@@ -38,7 +40,7 @@ class PromocodeUsageFactory extends Factory
     {
         return $this->state(function (array $attributes) use ($user) {
             return [
-                config('promocodes.models.promocode_usage_table.user_id_foreign_id') => $user->getAuthIdentifier(),
+                getPromocodeUsageTableUserIdField() => $user->getAuthIdentifier(),
             ];
         });
     }

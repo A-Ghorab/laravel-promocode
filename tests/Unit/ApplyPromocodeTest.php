@@ -50,3 +50,12 @@ it('Promocode Already Expired', function () {
     $user->applyPromocode($promocode->code);
 
 })->throws(PromocodeExpired::class);
+
+it('Access Promocode from User', function () {
+    $user = User::factory()->createOne();
+
+    /** @var Promocode */
+    Promocode::factory()->has(PromocodeUsage::factory()->forUser($user)->count(1), 'usages')->singleUse()->totalUsage(1)->createOne();
+
+    expect($user->promocodes()->count())->toEqual(1);
+});

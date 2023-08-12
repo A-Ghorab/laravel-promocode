@@ -6,14 +6,21 @@ use AGhorab\LaravelPromocode\Exceptions\PromocodeAlreadyApplied;
 use AGhorab\LaravelPromocode\Exceptions\PromocodeExpired;
 use AGhorab\LaravelPromocode\Exceptions\PromocodeNotAllowedForUser;
 use AGhorab\LaravelPromocode\Exceptions\PromocodeUsageExceeded;
-use AGhorab\LaravelPromocode\Models\Promocode;
-use Illuminate\Foundation\Auth\User;
-
 use function AGhorab\LaravelPromocode\getPromocodeModel;
 use function AGhorab\LaravelPromocode\getPromocodeUsageModel;
+use function AGhorab\LaravelPromocode\getPromocodeUsageTable;
+use function AGhorab\LaravelPromocode\getPromocodeUsageTableUserIdField;
+use AGhorab\LaravelPromocode\Models\Promocode;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Foundation\Auth\User;
 
 trait HasPromocode
 {
+    public function promocodes(): BelongsToMany
+    {
+        return $this->belongsToMany(getPromocodeModel(), getPromocodeUsageTable(), getPromocodeUsageTableUserIdField());
+    }
+
     public function applyPromocode(string $code)
     {
         /** @var User */
@@ -41,7 +48,7 @@ trait HasPromocode
         $promocodeUsageClass = getPromocodeUsageModel();
 
         return $promocode->usages()->save(new $promocodeUsageClass([
-            config('promocodes.models.promocode_usage_table.user_id_foreign_id') => $user->getAuthIdentifier(),
+            getPromocodeUsageTableUserIdField() => $user->getAuthIdentifier(),
         ]));
     }
 }
