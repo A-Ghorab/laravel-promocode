@@ -5,6 +5,7 @@ namespace AGhorab\LaravelPromocode\Models;
 use AGhorab\LaravelPromocode\Database\Factories\PromocodeUsageFactory;
 use function AGhorab\LaravelPromocode\getPromocodeModel;
 use function AGhorab\LaravelPromocode\getPromocodeUsageTable;
+use function AGhorab\LaravelPromocode\getPromocodeUsageTablePromocodeIdField;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -37,7 +38,7 @@ class PromocodeUsage extends Model
     {
         return $this->belongsTo(
             getPromocodeModel(),
-            config('promocodes.models.promocode_usage_table.promocode_foreign_id'),
+            getPromocodeUsageTablePromocodeIdField(),
         );
     }
 }

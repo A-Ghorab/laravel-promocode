@@ -2,6 +2,7 @@
 
 namespace AGhorab\LaravelPromocode\Exceptions;
 
+use function AGhorab\LaravelPromocode\getScalarValue;
 use Illuminate\Contracts\Auth\Authenticatable;
 
 class PromocodeNotAllowedForUser extends PromocodeBaseValidation
@@ -10,7 +11,7 @@ class PromocodeNotAllowedForUser extends PromocodeBaseValidation
     {
         parent::__construct(__("The code :code isn't allowed for user :user", [
             'code' => $code,
-            'user' => $user->getAuthIdentifier(),
+            'user' => getScalarValue($user->getAuthIdentifier()),
         ]));
     }
 }

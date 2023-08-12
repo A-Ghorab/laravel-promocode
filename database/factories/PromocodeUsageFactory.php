@@ -2,14 +2,12 @@
 
 namespace AGhorab\LaravelPromocode\Database\Factories;
 
-use AGhorab\LaravelPromocode\Models\Promocode;
+use function AGhorab\LaravelPromocode\getPromocodeUsageTableUserIdField;
 use AGhorab\LaravelPromocode\Models\PromocodeUsage;
 use AGhorab\LaravelPromocode\Tests\MockModels\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Auth\User as AuthUser;
-
-use function AGhorab\LaravelPromocode\getPromocodeUsageTableUserIdField;
 
 /**
  * @extends Factory<PromocodeUsage>
@@ -31,7 +29,6 @@ class PromocodeUsageFactory extends Factory
     public function definition(): array
     {
         return [
-            // config('promocodes.models.promocode_usage_table.promocode_foreign_id') => Promocode::factory()->create()->getKey(),
             getPromocodeUsageTableUserIdField() => User::all()->random()->getAuthIdentifier(),
         ];
     }

@@ -3,9 +3,12 @@
 namespace AGhorab\LaravelPromocode\Models;
 
 use AGhorab\LaravelPromocode\Database\Factories\PromocodeFactory;
+use function AGhorab\LaravelPromocode\getBoundedUserModelName;
+use function AGhorab\LaravelPromocode\getPromocodeTableName;
+use function AGhorab\LaravelPromocode\getPromocodeTableUserIdFieldName;
 use function AGhorab\LaravelPromocode\getPromocodeUsageModel;
+use function AGhorab\LaravelPromocode\getPromocodeUsageTablePromocodeIdField;
 use function AGhorab\LaravelPromocode\getPromocodeUsageTableUserIdField;
-
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -69,7 +72,7 @@ class Promocode extends Model
     {
         parent::__construct($attributes);
 
-        $this->setTable(config('promocodes.models.promocodes.table_name'));
+        $this->setTable(getPromocodeTableName());
     }
 
     protected static function newFactory(): PromocodeFactory
@@ -83,8 +86,8 @@ class Promocode extends Model
     public function boundedUser(): BelongsTo
     {
         return $this->belongsTo(
-            config('promocodes.models.users.model'),
-            config('promocodes.models.promocodes.bound_to_user_id_foreign_id'),
+            getBoundedUserModelName(),
+            getPromocodeTableUserIdFieldName(),
         );
     }
 
@@ -95,7 +98,7 @@ class Promocode extends Model
     {
         return $this->hasMany(
             getPromocodeUsageModel(),
-            config('promocodes.models.promocode_usage_table.promocode_foreign_id')
+            getPromocodeUsageTablePromocodeIdField()
         );
     }
 
@@ -123,7 +126,7 @@ class Promocode extends Model
         $builder
             ->hasUsage()
             ->where(fn (Builder $builder) => $builder->where('multi_use', true)->orWhereDoesntHave('usages', fn (Builder $builder) => $builder->where(getPromocodeUsageTableUserIdField(), $user->getAuthIdentifier())))
-            ->where(fn (Builder $builder) => $builder->notBounded()->orWhere(config('promocodes.models.promocodes.bound_to_user_id_foreign_id'), $user->getAuthIdentifier()));
+            ->where(fn (Builder $builder) => $builder->notBounded()->orWhere(getPromocodeTableUserIdFieldName(), $user->getAuthIdentifier()));
     }
 
     /**
@@ -140,7 +143,7 @@ class Promocode extends Model
     public function scopeNotBounded(Builder $builder): void
     {
         $builder->where(function (Builder $builder) {
-            $builder->whereNull(config('promocodes.models.promocodes.bound_to_user_id_foreign_id'));
+            $builder->whereNull(getPromocodeTableUserIdFieldName());
         });
     }
 

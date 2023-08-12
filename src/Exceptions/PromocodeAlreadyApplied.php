@@ -2,6 +2,7 @@
 
 namespace AGhorab\LaravelPromocode\Exceptions;
 
+use function AGhorab\LaravelPromocode\getScalarValue;
 use Illuminate\Contracts\Auth\Authenticatable;
 
 class PromocodeAlreadyApplied extends PromocodeBaseValidation
@@ -10,7 +11,7 @@ class PromocodeAlreadyApplied extends PromocodeBaseValidation
     {
         parent::__construct(__('The code :code is already applied', [
             'code' => $code,
-            'user' => $user->getAuthIdentifier(),
+            'user' => getScalarValue($user->getAuthIdentifier()),
         ]));
     }
 }

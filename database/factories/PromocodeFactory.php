@@ -2,6 +2,7 @@
 
 namespace AGhorab\LaravelPromocode\Database\Factories;
 
+use function AGhorab\LaravelPromocode\getPromocodeTableUserIdFieldName;
 use AGhorab\LaravelPromocode\Models\Promocode;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Model;
@@ -91,7 +92,7 @@ class PromocodeFactory extends Factory
     {
         return $this->state(function (array $attributes) use ($user) {
             return [
-                config('promocodes.models.promocodes.bound_to_user_id_foreign_id') => $user->getAuthIdentifier(),
+                getPromocodeTableUserIdFieldName() => $user->getAuthIdentifier(),
             ];
         });
     }
