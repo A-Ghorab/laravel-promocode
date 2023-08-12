@@ -9,7 +9,6 @@ use function AGhorab\LaravelPromocode\getPromocodeUsageTable;
 use function AGhorab\LaravelPromocode\getPromocodeUsageTablePromocodeIdField;
 use function AGhorab\LaravelPromocode\getPromocodeUsageTableUserIdField;
 use function AGhorab\LaravelPromocode\getScalarValue;
-
 use AGhorab\LaravelPromocode\Models\Promocode;
 use AGhorab\LaravelPromocode\Tests\MockModels\User;
 
