@@ -9,7 +9,9 @@ if (! function_exists('getPromocodeModel')) {
      */
     function getPromocodeModel()
     {
+        /** @var class-string<Promocode> */
         $promoCodeClass = config('promocodes.models.promocodes.model');
+        
         if (! is_a($promoCodeClass, Promocode::class, true)) {
             throw new Exception("Class doesn't extend Promocode Model");
         }
@@ -24,6 +26,7 @@ if (! function_exists('getPromocodeUsageModel')) {
      */
     function getPromocodeUsageModel()
     {
+        /** @var class-string<PromocodeUsage> */
         $promocodeUsageClass = config('promocodes.models.promocode_usage_table.model');
 
         if (! is_a($promocodeUsageClass, PromocodeUsage::class, true)) {
