@@ -11,6 +11,8 @@ use function AGhorab\LaravelPromocode\getPromocodeRedemptionModel;
 use function AGhorab\LaravelPromocode\getPromocodeRedemptionTable;
 use function AGhorab\LaravelPromocode\getPromocodeRedemptionTableUserIdField;
 use AGhorab\LaravelPromocode\Models\Promocode;
+use AGhorab\LaravelPromocode\Models\PromocodeRedemption;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Foundation\Auth\User;
 
@@ -21,7 +23,7 @@ trait HasPromocode
         return $this->belongsToMany(getPromocodeModel(), getPromocodeRedemptionTable(), getPromocodeRedemptionTableUserIdField());
     }
 
-    public function applyPromocode(string $code)
+    public function applyPromocode(string $code, Model $item = null)
     {
         /** @var User */
         $user = $this;
@@ -47,8 +49,15 @@ trait HasPromocode
 
         $promocodeUsageClass = getPromocodeRedemptionModel();
 
-        return $promocode->redemptions()->save(new $promocodeUsageClass([
+        /** @var PromocodeRedemption */
+        $redemption = new $promocodeUsageClass([
             getPromocodeRedemptionTableUserIdField() => $user->getAuthIdentifier(),
-        ]));
+        ]);
+
+        if ($item) {
+            $redemption->redeemedItems()->associate($item);
+        }
+
+        return $promocode->redemptions()->save($redemption);
     }
 }

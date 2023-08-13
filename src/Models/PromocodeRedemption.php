@@ -9,6 +9,7 @@ use function AGhorab\LaravelPromocode\getPromocodeRedemptionTablePromocodeIdFiel
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
 
 class PromocodeRedemption extends Model
 {
@@ -40,5 +41,13 @@ class PromocodeRedemption extends Model
             getPromocodeModel(),
             getPromocodeRedemptionTablePromocodeIdField(),
         );
+    }
+
+    /**
+     * @return MorphTo<Model,PromocodeRedemption>
+     */
+    public function redeemedItems(): MorphTo
+    {
+        return $this->morphTo();
     }
 }
