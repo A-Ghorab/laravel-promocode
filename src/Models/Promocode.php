@@ -82,10 +82,13 @@ class Promocode extends Model
         return new PromocodeFactory();
     }
 
+    /**
+     * @return Attribute<?DiscountCalculator,?string>
+     */
     protected function discountCalculator(): Attribute
     {
         return Attribute::make(
-            get: fn (?string $value) => $value ? unserialize($value) : null,
+            get: fn ($value) => $value && is_string($value) ? unserialize($value) : null,
             set: fn (?DiscountCalculator $calculator) => $calculator ? serialize($calculator) : null
         )->shouldCache();
     }

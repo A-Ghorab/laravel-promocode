@@ -17,6 +17,10 @@ class PromocodesServiceProvider extends ServiceProvider
             ], 'config');
 
             $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
+
+            if (config('app.env') === 'testing') {
+                $this->loadMigrationsFrom(__DIR__.'/../tests/database/migrations');
+            }
         }
     }
 

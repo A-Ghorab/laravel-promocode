@@ -59,7 +59,7 @@ trait HasPromocode
 
                 if ($item instanceof Model) {
                     $item->save();
-                    $redemption->redeemedItems()->associate($item);
+                    $redemption->redeemedItem()->associate($item);
                 }
             }
         }));

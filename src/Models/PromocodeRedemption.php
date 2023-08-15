@@ -59,7 +59,7 @@ class PromocodeRedemption extends Model
     /**
      * @return MorphTo<Model,PromocodeRedemption>
      */
-    public function redeemedItems(): MorphTo
+    public function redeemedItem(): MorphTo
     {
         return $this->morphTo();
     }

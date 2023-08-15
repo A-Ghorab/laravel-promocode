@@ -3,14 +3,14 @@
 namespace AGhorab\LaravelPromocode\Traits;
 
 use AGhorab\LaravelPromocode\Handlers\DiscountCalculator;
-use Exception;
+use UnexpectedValueException;
 
 trait ApplyPromocodeHandler
 {
     public function applyPromocodeDiscount(DiscountCalculator $handler)
     {
-        if (! isset($this->discountables) || ! is_array($this->discountables)) {
-            throw new Exception('discountables field not found');
+        if (! is_array($this->discountables)) {
+            throw new UnexpectedValueException('discountables field not array');
         }
         foreach ($this->discountables as $key => $value) {
             if (is_string($key)) {

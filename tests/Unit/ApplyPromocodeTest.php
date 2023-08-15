@@ -4,9 +4,11 @@ use AGhorab\LaravelPromocode\Exceptions\PromocodeAlreadyApplied;
 use AGhorab\LaravelPromocode\Exceptions\PromocodeExpired;
 use AGhorab\LaravelPromocode\Exceptions\PromocodeNotAllowedForUser;
 use AGhorab\LaravelPromocode\Exceptions\PromocodeRedemptionExceeded;
+use AGhorab\LaravelPromocode\Handlers\PercentageDiscountHandler;
 use AGhorab\LaravelPromocode\Models\Promocode;
 use AGhorab\LaravelPromocode\Models\PromocodeRedemption;
 use AGhorab\LaravelPromocode\Tests\MockModels\User;
+use AGhorab\LaravelPromocode\Tests\Requests\CartWithWrongDiscountablesType;
 
 it('Promocode Bounded to another user', function () {
     /** @var User */
@@ -59,3 +61,14 @@ it('Access Promocode from User', function () {
 
     expect($user->promocodes()->count())->toEqual(1);
 });
+
+it('test user can apply on promocode and gain discount', function () {
+    /** @var User */
+    $user = User::factory()->createOne();
+    /** @var Promocode */
+    $promocode = Promocode::factory()->singleUse()->totalUsage(3)->discount(new PercentageDiscountHandler(20))->createOne();
+
+    $cart = new CartWithWrongDiscountablesType(1000);
+
+    $user->applyPromocode($promocode->code, $cart);
+})->throws(UnexpectedValueException::class, 'discountables field not array');
