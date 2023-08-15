@@ -1,5 +1,6 @@
 <?php
 
+use AGhorab\LaravelPromocode\Handlers\PercentageDiscountHandler;
 use AGhorab\LaravelPromocode\Models\Promocode;
 use AGhorab\LaravelPromocode\Models\PromocodeRedemption;
 use AGhorab\LaravelPromocode\Tests\MockModels\User;
@@ -51,7 +52,7 @@ it('select only promocode allowed for user', function () {
     $user = User::factory()->createOne();
     Promocode::factory()->has(PromocodeRedemption::factory()->forUser($user)->count(1), 'redemptions')->singleUse()->totalUsage(5)->count(3)->create();
 
-    expect(Promocode::query()->hasUsageForUser($user)->count())->toEqual(8);
+    expect(Promocode::query()->hasUsageFor($user)->count())->toEqual(8);
 });
 
 it('user can use promocode multiple times if multi use is enabled', function () {
@@ -64,34 +65,33 @@ it('user can use promocode multiple times if multi use is enabled', function () 
     $user = User::factory()->createOne();
     Promocode::factory()->has(PromocodeRedemption::factory()->forUser($user)->count(1), 'redemptions')->multiUse()->totalUsage(5)->count(3)->create();
 
-    expect(Promocode::query()->hasUsageForUser($user)->count())->toEqual(11);
+    expect(Promocode::query()->hasUsageFor($user)->count())->toEqual(11);
 });
 
 it('validate bounded promocode is only visible to the one issuer only', function () {
     [$user, $otherUser] = User::factory()->count(2)->create();
     /** @var Promocode */
-    $promocode = Promocode::factory()->singleUse()->boundedUser($user)->createOne();
+    $promocode = Promocode::factory()->singleUse()->boundedReedemer($user)->createOne();
 
     /** @var Collection<int,Promocode> */
-    $promocodesForUser = Promocode::query()->hasUsageForUser($user)->get();
+    $promocodesForUser = Promocode::query()->hasUsageFor($user)->get();
     expect($promocodesForUser->count())->toEqual(1);
     expect($promocodesForUser->first()->code)->toEqual($promocode->code);
-    expect(Promocode::query()->hasUsageForUser($otherUser)->count())->toEqual(0);
+    expect(Promocode::query()->hasUsageFor($otherUser)->count())->toEqual(0);
 });
 
 it('get promocode that avaliable for every one and ignore bounded', function () {
     $user = User::factory()->createOne();
 
-    Promocode::factory()->singleUse()->boundedUser($user)->createOne();
+    Promocode::factory()->singleUse()->boundedReedemer($user)->createOne();
     Promocode::factory()->singleUse()->count(3)->create();
 
     expect(Promocode::hasUsageForAnyone()->count())->toEqual(3);
 });
 
-it('test storing extra info in the details section', function () {
-
+it('promocode should serialize calculator', function () {
     /** @var Promocode */
-    $promocode = Promocode::factory()->singleUse()->details(['discount' => '20%'])->createOne();
+    $promocode = Promocode::factory()->singleUse()->discount(new PercentageDiscountHandler(10))->createOne();
 
-    expect($promocode->getDetail('discount'))->toEqual('20%');
+    expect(Promocode::findByCode($promocode->code)->discount_calculator)->toBeInstanceOf(PercentageDiscountHandler::class);
 });

@@ -3,13 +3,15 @@
 namespace AGhorab\LaravelPromocode\Models;
 
 use AGhorab\LaravelPromocode\Database\Factories\PromocodeFactory;
-use function AGhorab\LaravelPromocode\getBoundedUserModelName;
+use function AGhorab\LaravelPromocode\getboundedReedemerModelName;
 use function AGhorab\LaravelPromocode\getPromocodeRedemptionModel;
 use function AGhorab\LaravelPromocode\getPromocodeRedemptionTablePromocodeIdField;
 use function AGhorab\LaravelPromocode\getPromocodeRedemptionTableUserIdField;
 use function AGhorab\LaravelPromocode\getPromocodeTableName;
 use function AGhorab\LaravelPromocode\getPromocodeTableUserIdFieldName;
+use AGhorab\LaravelPromocode\Handlers\DiscountCalculator;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -21,7 +23,8 @@ use Illuminate\Support\Facades\DB;
  * @property int $id
  * @property string $code
  * @property int|null $total_usages
- * @property User|null $boundedUser
+ * @property User|null $boundedReedemer
+ * @property DiscountCalculator|null $discount_calculator
  * @property bool $multi_use
  * @property \Illuminate\Support\Carbon|null $expired_at
  * @property \Illuminate\Support\Carbon|null $created_at
@@ -30,7 +33,7 @@ use Illuminate\Support\Facades\DB;
  *
  * @method static \Illuminate\Database\Eloquent\Builder|self available()
  * @method static \Illuminate\Database\Eloquent\Builder|self hasUsage()
- * @method static \Illuminate\Database\Eloquent\Builder|self hasUsageForUser()
+ * @method static \Illuminate\Database\Eloquent\Builder|self hasUsageFor()
  * @method static \Illuminate\Database\Eloquent\Builder|self hasUsageForAnyone()
  * @method static \Illuminate\Database\Eloquent\Builder|self notBounded()
  * @method static self findByCode(string $code)
@@ -55,7 +58,6 @@ class Promocode extends Model
         'expired_at' => 'datetime',
         'total_usages' => 'integer',
         'multi_use' => 'boolean',
-        'details' => 'json',
     ];
 
     /**
@@ -80,13 +82,21 @@ class Promocode extends Model
         return new PromocodeFactory();
     }
 
+    protected function discountCalculator(): Attribute
+    {
+        return Attribute::make(
+            get: fn (?string $value) => $value ? unserialize($value) : null,
+            set: fn (?DiscountCalculator $calculator) => $calculator ? serialize($calculator) : null
+        )->shouldCache();
+    }
+
     /**
      * @return BelongsTo<Promocode,User>
      */
-    public function boundedUser(): BelongsTo
+    public function boundedReedemer(): BelongsTo
     {
         return $this->belongsTo(
-            getBoundedUserModelName(),
+            getboundedReedemerModelName(),
             getPromocodeTableUserIdFieldName(),
         );
     }
@@ -121,7 +131,7 @@ class Promocode extends Model
     /**
      * @param  Builder<Promocode>  $builder
      */
-    public function scopeHasUsageForUser(Builder $builder, User $user): void
+    public function scopeHasUsageFor(Builder $builder, User $user): void
     {
         $builder
             ->hasUsage()
@@ -174,18 +184,13 @@ class Promocode extends Model
         return $this->isUnlimited() || ($this->total_usages - $this->redemptions_count) > 0;
     }
 
-    public function allowedForUser(User $user): bool
+    public function allowedFor(User $user): bool
     {
-        return $this->boundedUser === null || $this->boundedUser->is($user);
+        return $this->boundedReedemer === null || $this->boundedReedemer->is($user);
     }
 
-    public function appliedByUser(User $user): bool
+    public function appliedBy(User $user): bool
     {
         return $this->whereRelation('redemptions', getPromocodeRedemptionTableUserIdField(), $user->id)->exists();
-    }
-
-    public function getDetail(string $key, mixed $fallback = null): mixed
-    {
-        return $this->details[$key] ?? $fallback;
     }
 }

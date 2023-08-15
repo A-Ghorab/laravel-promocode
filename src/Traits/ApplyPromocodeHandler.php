@@ -2,28 +2,26 @@
 
 namespace AGhorab\LaravelPromocode\Traits;
 
-use AGhorab\LaravelPromocode\Handlers\BaseDiscountHandler;
+use AGhorab\LaravelPromocode\Handlers\DiscountCalculator;
+use Exception;
 
 trait ApplyPromocodeHandler
 {
-    protected $discountables = [];
-
-    /**
-     * @return array<string,array<string,string>>
-     */
-    public function getDiscountableItems(): array
+    public function applyPromocodeDiscount(DiscountCalculator $handler)
     {
-        return [
-            'amount' => [
-                'discount' => 'discount',
-                'original' => null,
-            ],
-        ];
-    }
+        if (! isset($this->discountables) || ! is_array($this->discountables)) {
+            throw new Exception('discountables field not found');
+        }
+        foreach ($this->discountables as $key => $value) {
+            if (is_string($key)) {
+                $attribute = $key;
+                ['discount' => $discount, 'original' => $original] = $value;
+            } else {
+                $attribute = $value;
+                $discount = null;
+                $original = null;
+            }
 
-    public function applyPromocodeDiscount(BaseDiscountHandler $handler)
-    {
-        foreach ($this->getDiscountableItems() as $attribute => [$discount, $original]) {
             $originalAmount = $this->{$attribute};
 
             $amountAfterDiscount = $handler->calculate($originalAmount);

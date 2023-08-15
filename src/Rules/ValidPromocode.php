@@ -28,14 +28,14 @@ class ValidPromocode implements ValidationRule
 
             if ($promocode->isExpired()) {
                 $fail(__('The code :code is expired', compact('code')));
-            } elseif ($user && ! $promocode->allowedForUser($user)) {
+            } elseif ($user && ! $promocode->allowedFor($user)) {
                 $fail(__("The code :code isn't allowed for user :user", [
                     'code' => $code,
                     'user' => getScalarValue($user->getKey()),
                 ]));
             } elseif (! $promocode->hasUsagesLeft()) {
                 $fail(__('The code :code has exceed the max usage', compact('code')));
-            } elseif ($user && ! $promocode->multi_use && $promocode->appliedByUser($user)) {
+            } elseif ($user && ! $promocode->multi_use && $promocode->appliedBy($user)) {
                 $fail(__('The code :code is already applied', [
                     'code' => $code,
                     'user' => getScalarValue($user->getKey()),

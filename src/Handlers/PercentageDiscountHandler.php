@@ -2,7 +2,7 @@
 
 namespace AGhorab\LaravelPromocode\Handlers;
 
-class PercentageDiscountHandler extends BaseDiscountHandler
+class PercentageDiscountHandler implements DiscountCalculator
 {
     public function __construct(private readonly float $percentage)
     {

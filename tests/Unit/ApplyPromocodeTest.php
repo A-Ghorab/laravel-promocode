@@ -13,7 +13,7 @@ it('Promocode Bounded to another user', function () {
     [$user, $otherUser] = User::factory()->count(2)->create();
 
     /** @var Promocode */
-    $promocode = Promocode::factory()->singleUse()->boundedUser($user)->createOne();
+    $promocode = Promocode::factory()->singleUse()->boundedReedemer($user)->createOne();
     $otherUser->applyPromocode($promocode->code);
 })->throws(PromocodeNotAllowedForUser::class);
 

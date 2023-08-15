@@ -1,6 +1,6 @@
 <?php
 
-use function AGhorab\LaravelPromocode\getBoundedUserModelName;
+use function AGhorab\LaravelPromocode\getboundedReedemerModelName;
 use function AGhorab\LaravelPromocode\getPromocodeModel;
 use function AGhorab\LaravelPromocode\getPromocodeRedemptionModel;
 use function AGhorab\LaravelPromocode\getPromocodeRedemptionTable;
@@ -27,7 +27,7 @@ it('Model should extends Promocode Usage', function () {
 it('Model should extends User', function () {
     config()->set('promocodes.models.users.model', Promocode::class);
 
-    getBoundedUserModelName();
+    getboundedReedemerModelName();
 })->throws(Exception::class);
 
 it('Promocodes Table name should be string', function () {

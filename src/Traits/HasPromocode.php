@@ -23,7 +23,7 @@ trait HasPromocode
         return $this->belongsToMany(getPromocodeModel(), getPromocodeRedemptionTable(), getPromocodeRedemptionTableUserIdField());
     }
 
-    public function applyPromocode(string $code, Model $item = null)
+    public function applyPromocode(string $code, object $item = null): void
     {
         /** @var User */
         $user = $this;
@@ -35,7 +35,7 @@ trait HasPromocode
             throw new PromocodeExpired($code);
         }
 
-        if (! $promocode->allowedForUser($user)) {
+        if (! $promocode->allowedFor($user)) {
             throw new PromocodeNotAllowedForUser($code, $user);
         }
 
@@ -43,21 +43,25 @@ trait HasPromocode
             throw new PromocodeRedemptionExceeded($code);
         }
 
-        if (! $promocode->multi_use && $promocode->appliedByUser($user)) {
+        if (! $promocode->multi_use && $promocode->appliedBy($user)) {
             throw new PromocodeAlreadyApplied($code, $user);
         }
 
         $promocodeUsageClass = getPromocodeRedemptionModel();
 
-        /** @var PromocodeRedemption */
-        $redemption = new $promocodeUsageClass([
-            getPromocodeRedemptionTableUserIdField() => $user->getAuthIdentifier(),
-        ]);
+        $promocode->redemptions()->save(tap(new $promocodeUsageClass, function (PromocodeRedemption $redemption) use ($user, $promocode, $item) {
+            $redemption->redeemer()->associate($user);
 
-        if ($item) {
-            $redemption->redeemedItems()->associate($item);
-        }
+            if ($item) {
+                if ($promocode->discount_calculator && method_exists($item, 'applyPromocodeDiscount')) {
+                    $item->applyPromocodeDiscount($promocode->discount_calculator);
+                }
 
-        return $promocode->redemptions()->save($redemption);
+                if ($item instanceof Model) {
+                    $item->save();
+                    $redemption->redeemedItems()->associate($item);
+                }
+            }
+        }));
     }
 }

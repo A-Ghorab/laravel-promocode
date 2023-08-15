@@ -62,7 +62,7 @@ function getPromocodeRedemptionModel()
 /**
  * @return class-string<PromocodeRedemption>
  */
-function getBoundedUserModelName()
+function getboundedReedemerModelName()
 {
     /** @var class-string<PromocodeRedemption> */
     $userClass = config('promocodes.models.users.model');

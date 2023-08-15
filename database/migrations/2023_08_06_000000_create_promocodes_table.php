@@ -21,7 +21,7 @@ return new class extends Migration
             $table->unsignedInteger('total_usages')->nullable();
             $table->boolean('multi_use')->default(false);
             $table->foreignId($models['promocodes']['bound_to_user_id_foreign_id'])->nullable()->constrained($models['users']['table_name'], $models['users']['id'])->nullOnDelete();
-            $table->json('details')->nullable();
+            $table->binary('discount_calculator')->nullable();
             $table->timestamp('expired_at')->nullable();
             $table->timestamps();
         });
