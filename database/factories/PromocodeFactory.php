@@ -3,6 +3,7 @@
 namespace AGhorab\LaravelPromocode\Database\Factories;
 
 use function AGhorab\LaravelPromocode\getPromocodeTableUserIdFieldName;
+use AGhorab\LaravelPromocode\Handlers\DiscountCalculator;
 use AGhorab\LaravelPromocode\Models\Promocode;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Model;
@@ -88,7 +89,7 @@ class PromocodeFactory extends Factory
         });
     }
 
-    public function boundedUser(User $user): Factory
+    public function boundedReedemer(User $user): Factory
     {
         return $this->state(function (array $attributes) use ($user) {
             return [
@@ -97,11 +98,11 @@ class PromocodeFactory extends Factory
         });
     }
 
-    public function details(array $details): Factory
+    public function discount(DiscountCalculator $discountCalculator): Factory
     {
-        return $this->state(function (array $attributes) use ($details) {
+        return $this->state(function (array $attributes) use ($discountCalculator) {
             return [
-                'details' => $details,
+                'discount_calculator' => $discountCalculator,
             ];
         });
     }

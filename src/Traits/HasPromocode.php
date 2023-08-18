@@ -11,6 +11,8 @@ use function AGhorab\LaravelPromocode\getPromocodeRedemptionModel;
 use function AGhorab\LaravelPromocode\getPromocodeRedemptionTable;
 use function AGhorab\LaravelPromocode\getPromocodeRedemptionTableUserIdField;
 use AGhorab\LaravelPromocode\Models\Promocode;
+use AGhorab\LaravelPromocode\Models\PromocodeRedemption;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Foundation\Auth\User;
 
@@ -21,7 +23,7 @@ trait HasPromocode
         return $this->belongsToMany(getPromocodeModel(), getPromocodeRedemptionTable(), getPromocodeRedemptionTableUserIdField());
     }
 
-    public function applyPromocode(string $code)
+    public function applyPromocode(string $code, object $item = null): void
     {
         /** @var User */
         $user = $this;
@@ -33,7 +35,7 @@ trait HasPromocode
             throw new PromocodeExpired($code);
         }
 
-        if (! $promocode->allowedForUser($user)) {
+        if (! $promocode->allowedFor($user)) {
             throw new PromocodeNotAllowedForUser($code, $user);
         }
 
@@ -41,14 +43,25 @@ trait HasPromocode
             throw new PromocodeRedemptionExceeded($code);
         }
 
-        if (! $promocode->multi_use && $promocode->appliedByUser($user)) {
+        if (! $promocode->multi_use && $promocode->appliedBy($user)) {
             throw new PromocodeAlreadyApplied($code, $user);
         }
 
         $promocodeUsageClass = getPromocodeRedemptionModel();
 
-        return $promocode->redemptions()->save(new $promocodeUsageClass([
-            getPromocodeRedemptionTableUserIdField() => $user->getAuthIdentifier(),
-        ]));
+        $promocode->redemptions()->save(tap(new $promocodeUsageClass, function (PromocodeRedemption $redemption) use ($user, $promocode, $item) {
+            $redemption->redeemer()->associate($user);
+
+            if ($item) {
+                if ($promocode->discount_calculator && method_exists($item, 'applyPromocodeDiscount')) {
+                    $item->applyPromocodeDiscount($promocode->discount_calculator);
+                }
+
+                if ($item instanceof Model) {
+                    $item->save();
+                    $redemption->redeemedItem()->associate($item);
+                }
+            }
+        }));
     }
 }

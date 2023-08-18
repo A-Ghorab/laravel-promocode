@@ -3,12 +3,15 @@
 namespace AGhorab\LaravelPromocode\Models;
 
 use AGhorab\LaravelPromocode\Database\Factories\PromocodeRedemptionFactory;
+use function AGhorab\LaravelPromocode\getboundedReedemerModelName;
 use function AGhorab\LaravelPromocode\getPromocodeModel;
 use function AGhorab\LaravelPromocode\getPromocodeRedemptionTable;
 use function AGhorab\LaravelPromocode\getPromocodeRedemptionTablePromocodeIdField;
+use function AGhorab\LaravelPromocode\getPromocodeRedemptionTableUserIdField;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
 
 class PromocodeRedemption extends Model
 {
@@ -40,5 +43,24 @@ class PromocodeRedemption extends Model
             getPromocodeModel(),
             getPromocodeRedemptionTablePromocodeIdField(),
         );
+    }
+
+    /**
+     * @return BelongsTo<PromocodeRedemption,\Illuminate\Foundation\Auth\User>
+     */
+    public function redeemer(): BelongsTo
+    {
+        return $this->belongsTo(
+            getboundedReedemerModelName(),
+            getPromocodeRedemptionTableUserIdField(),
+        );
+    }
+
+    /**
+     * @return MorphTo<Model,PromocodeRedemption>
+     */
+    public function redeemedItem(): MorphTo
+    {
+        return $this->morphTo();
     }
 }
